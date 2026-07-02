@@ -1,0 +1,6 @@
+code;name;descr
+PUMP;Pump;Centrifugal / positive-displacement pump
+MOTOR;Motor;Electric drive motor
+COMP;Compressor;Air / gas compressor
+XFMR;Transformer;Power transformer
+HVAC;HVAC Unit;Heating, ventilation and air-conditioning unit

@@ -1,0 +1,5 @@
+code;name;descr
+LOW;Low;Informational
+MEDIUM;Medium;Should be reviewed
+HIGH;High;Requires prompt action
+CRITICAL;Critical;Immediate action required

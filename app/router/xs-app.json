@@ -1,0 +1,33 @@
+{
+  "welcomeFile": "/dashboard/index.html",
+  "authenticationMethod": "route",
+  "sessionTimeout": 30,
+  "routes": [
+    {
+      "source": "^/monitoring/(.*)$",
+      "target": "/monitoring/$1",
+      "destination": "srv-api",
+      "authenticationType": "xsuaa",
+      "csrfProtection": true
+    },
+    {
+      "source": "^/alerting/(.*)$",
+      "target": "/alerting/$1",
+      "destination": "srv-api",
+      "authenticationType": "xsuaa",
+      "csrfProtection": true
+    },
+    {
+      "source": "^/dashboard/(.*)$",
+      "target": "$1",
+      "localDir": "resources/dashboard",
+      "authenticationType": "xsuaa",
+      "cacheControl": "no-cache, no-store, must-revalidate"
+    },
+    {
+      "source": "^/(.*)$",
+      "target": "/dashboard/$1",
+      "authenticationType": "xsuaa"
+    }
+  ]
+}

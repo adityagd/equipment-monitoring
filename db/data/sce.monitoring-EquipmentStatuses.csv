@@ -1,0 +1,5 @@
+code;name;descr
+OK;Normal;Operating within limits
+WARN;Warning;Approaching threshold limits
+CRIT;Critical;Threshold breached
+OFFLINE;Offline;No telemetry received

@@ -1,0 +1,4 @@
+code;name;descr
+OPEN;Open;Newly raised, needs attention
+ACK;Acknowledged;Being investigated
+RESOLVED;Resolved;Closed / mitigated

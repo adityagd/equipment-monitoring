@@ -1,0 +1,4 @@
+code;name;descr
+LOW;Low;Non-critical equipment
+MED;Medium;Standard operational equipment
+HIGH;High;Mission-critical equipment

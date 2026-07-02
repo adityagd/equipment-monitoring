@@ -1,0 +1,6 @@
+.sapMGT { border-radius: 0.75rem; }
+
+.sapUiSmallMargin .sapMPanelHdr { font-weight: 600; }
+
+/* Slight emphasis on the live status pill */
+#liveStatus .sapMObjStatusText { letter-spacing: 0.05em; }

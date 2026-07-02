@@ -1,0 +1,6 @@
+code;name;descr;defaultUnit
+TEMP;Temperature;Operating temperature;°C
+VIB;Vibration;RMS vibration velocity;mm/s
+PRES;Pressure;Discharge pressure;bar
+RPM;Rotational Speed;Shaft rotational speed;rpm
+CURR;Current;Motor line current;A

@@ -1,0 +1,11 @@
+{
+  "name": "equipment-monitoring-approuter",
+  "version": "1.0.0",
+  "description": "Standalone application router for Equipment Monitoring",
+  "dependencies": {
+    "@sap/approuter": "^16"
+  },
+  "scripts": {
+    "start": "node node_modules/@sap/approuter/approuter.js"
+  }
+}

@@ -1,0 +1,110 @@
+<mvc:View
+  controllerName="sce.monitoring.dashboard.controller.Dashboard"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns="sap.m"
+  xmlns:f="sap.f"
+  xmlns:card="sap.f.cards"
+  xmlns:core="sap.ui.core"
+  displayBlock="true">
+
+  <Page id="page" title="{i18n>appTitle}" showHeader="true">
+    <headerContent>
+      <ObjectStatus id="liveStatus" text="{i18n>live}" state="Success" inverted="true"/>
+      <Text id="lastRefresh" text="{view>/lastRefresh}" class="sapUiSmallMarginBegin"/>
+      <Button id="refreshBtn" icon="sap-icon://refresh" tooltip="{i18n>refresh}" press=".onRefresh"/>
+    </headerContent>
+
+    <content>
+      <!-- KPI tiles -->
+      <f:GridContainer id="kpiGrid" class="sapUiSmallMargin">
+        <f:layout>
+          <f:GridContainerSettings rowSize="5rem" columnSize="9rem" gap="0.75rem"/>
+        </f:layout>
+        <GenericTile id="kpiTotal" header="{i18n>kpiTotal}" frameType="OneByOne" press=".onKpiPress">
+          <TileContent>
+            <NumericContent value="{view>/kpi/total}" icon="sap-icon://factory" withMargin="false"/>
+          </TileContent>
+        </GenericTile>
+        <GenericTile id="kpiOk" header="{i18n>kpiOk}" frameType="OneByOne">
+          <TileContent unit="OK">
+            <NumericContent value="{view>/kpi/ok}" valueColor="Good" icon="sap-icon://sys-enter-2"/>
+          </TileContent>
+        </GenericTile>
+        <GenericTile id="kpiWarn" header="{i18n>kpiWarn}" frameType="OneByOne">
+          <TileContent unit="WARN">
+            <NumericContent value="{view>/kpi/warn}" valueColor="Critical" icon="sap-icon://alert"/>
+          </TileContent>
+        </GenericTile>
+        <GenericTile id="kpiCrit" header="{i18n>kpiCrit}" frameType="OneByOne">
+          <TileContent unit="CRIT">
+            <NumericContent value="{view>/kpi/crit}" valueColor="Error" icon="sap-icon://error"/>
+          </TileContent>
+        </GenericTile>
+        <GenericTile id="kpiOpenAlerts" header="{i18n>kpiOpenAlerts}" frameType="OneByOne" press=".onOpenAlerts">
+          <TileContent>
+            <NumericContent value="{view>/kpi/openAlerts}" valueColor="Error" icon="sap-icon://bell"/>
+          </TileContent>
+        </GenericTile>
+      </f:GridContainer>
+
+      <!-- Equipment overview + Alert inbox side by side -->
+      <f:GridList
+        id="equipmentList"
+        headerText="{i18n>equipmentHeader}"
+        items="{ path: '/Equipment', parameters: { $expand: 'type,status,criticality' } }"
+        class="sapUiSmallMargin">
+        <f:GridListItem type="Active" press=".onEquipmentPress">
+          <VBox class="sapUiSmallMargin">
+            <HBox justifyContent="SpaceBetween" alignItems="Center">
+              <Title text="{name}" level="H5"/>
+              <ObjectStatus
+                text="{status/name}"
+                state="{ path: 'status/code', formatter: '.formatStatusState' }"
+                inverted="true"/>
+            </HBox>
+            <Text text="{tag} · {type/name}"/>
+            <Text text="{location}" class="sapUiTinyMarginTop"/>
+            <ObjectStatus
+              text="{criticality/name}"
+              icon="sap-icon://warning"
+              class="sapUiTinyMarginTop"/>
+          </VBox>
+        </f:GridListItem>
+      </f:GridList>
+
+      <!-- Alert inbox -->
+      <Panel id="alertPanel" headerText="{i18n>alertsHeader}" expandable="true" expanded="true" class="sapUiSmallMargin">
+        <Table id="alertTable"
+          items="{ path: 'alerting>/Alerts', parameters: { $expand: 'severity,status,equipment', $orderby: 'raisedAt desc', $top: 50 } }"
+          growing="true" growingThreshold="20">
+          <headerToolbar>
+            <OverflowToolbar>
+              <Title text="{i18n>alertsHeader}"/>
+              <ToolbarSpacer/>
+              <Button text="{i18n>acknowledge}" icon="sap-icon://accept" press=".onAcknowledge" enabled="{= ${alertTable>/selectedCount} > 0}"/>
+              <Button text="{i18n>resolve}" icon="sap-icon://complete" type="Emphasized" press=".onResolve"/>
+            </OverflowToolbar>
+          </headerToolbar>
+          <columns>
+            <Column><Text text="{i18n>colSeverity}"/></Column>
+            <Column><Text text="{i18n>colEquipment}"/></Column>
+            <Column><Text text="{i18n>colMessage}"/></Column>
+            <Column><Text text="{i18n>colStatus}"/></Column>
+            <Column><Text text="{i18n>colRaisedAt}"/></Column>
+          </columns>
+          <items>
+            <ColumnListItem type="Active" press=".onAlertPress">
+              <cells>
+                <ObjectStatus text="{alerting>severity/name}" state="{ path: 'alerting>severity/code', formatter: '.formatSeverityState' }" inverted="true"/>
+                <Text text="{alerting>equipment/tag}"/>
+                <Text text="{alerting>message}"/>
+                <ObjectStatus text="{alerting>status/name}"/>
+                <Text text="{ path: 'alerting>raisedAt', type: 'sap.ui.model.odata.type.DateTimeOffset', formatOptions: { style: 'medium' } }"/>
+              </cells>
+            </ColumnListItem>
+          </items>
+        </Table>
+      </Panel>
+    </content>
+  </Page>
+</mvc:View>

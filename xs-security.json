@@ -1,0 +1,48 @@
+{
+  "xsappname": "equipment-monitoring",
+  "tenant-mode": "dedicated",
+  "description": "Security profile for the Real-Time Equipment Monitoring & Alerting System",
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.Viewer",
+      "description": "Read equipment, metrics and alerts"
+    },
+    {
+      "name": "$XSAPPNAME.Supervisor",
+      "description": "Acknowledge / resolve alerts and trigger maintenance"
+    },
+    {
+      "name": "$XSAPPNAME.Ingest",
+      "description": "Publish telemetry into the ingestion pipeline",
+      "grant-as-authority-to-apps": ["$XSAPPNAME(application)"]
+    }
+  ],
+  "attributes": [],
+  "role-templates": [
+    {
+      "name": "Viewer",
+      "description": "Monitoring Viewer",
+      "scope-references": ["$XSAPPNAME.Viewer"]
+    },
+    {
+      "name": "Supervisor",
+      "description": "Monitoring Supervisor",
+      "scope-references": ["$XSAPPNAME.Viewer", "$XSAPPNAME.Supervisor"]
+    }
+  ],
+  "role-collections": [
+    {
+      "name": "EquipmentMonitoringViewer",
+      "description": "Equipment Monitoring - Viewer",
+      "role-template-references": ["$XSAPPNAME.Viewer"]
+    },
+    {
+      "name": "EquipmentMonitoringSupervisor",
+      "description": "Equipment Monitoring - Supervisor",
+      "role-template-references": ["$XSAPPNAME.Supervisor"]
+    }
+  ],
+  "oauth2-configuration": {
+    "redirect-uris": ["https://*.hana.ondemand.com/**"]
+  }
+}
