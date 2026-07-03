@@ -97,6 +97,14 @@ npm test
 | `sce/monitoring/equipment/alert/raised/v1`       | outbound  | alert raised on threshold breach |
 | `sce/monitoring/equipment/status/changed/v1`     | outbound  | equipment status transition      |
 
+## Event broker
+
+SAP Event Mesh is not available in BTP trial accounts, so event-driven messaging
+runs over an external **Solace PubSub+** broker (MQTT) via the bridge in
+[`srv/server.js`](srv/server.js). Full broker + trial-account configuration is in
+**[SOLACE_SETUP.md](SOLACE_SETUP.md)**. Without broker credentials the app runs
+on internal messaging and the bridge disables itself.
+
 ## Deploy to Cloud Foundry
 
 Prereqs: `cf` CLI (logged in to your BTP CF space) and the Cloud MTA Build Tool.

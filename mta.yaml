@@ -34,9 +34,12 @@ modules:
     requires:
       - name: equipment-monitoring-auth
       - name: equipment-monitoring-db
-      - name: equipment-monitoring-messaging
       - name: equipment-monitoring-destination
       - name: equipment-monitoring-connectivity
+    # Solace broker (external PubSub+ / Advanced Event Mesh) is bound AFTER deploy
+    # via a user-provided service — see SOLACE_SETUP.md. The app falls back to
+    # internal messaging when no Solace binding is present, so deploy never
+    # depends on the broker existing first.
 
   # -------------------------------------------------------------------------
   # HANA HDI content deployer (tables + sample data)
@@ -97,24 +100,9 @@ resources:
       service: hana
       service-plan: hdi-shared
 
-  # SAP Event Mesh — telemetry ingestion + alert distribution
-  - name: equipment-monitoring-messaging
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: enterprise-messaging
-      service-plan: default
-      config:
-        emname: em-${org}-${space}
-        version: "1.1.0"
-        namespace: sce/monitoring/em
-        options:
-          management: true
-        rules:
-          topicRules:
-            publishFilter:
-              - "${namespace}/*"
-            subscribeFilter:
-              - "${namespace}/*"
+  # NOTE: SAP Event Mesh is not offered in BTP trial. Event-driven messaging is
+  # provided by an external Solace PubSub+ broker, bound post-deploy as a
+  # user-provided service (equipment-monitoring-solace). See SOLACE_SETUP.md.
 
   # Destination service — external Maintenance backend integration
   - name: equipment-monitoring-destination
