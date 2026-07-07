@@ -75,7 +75,7 @@
       <!-- Alert inbox -->
       <Panel id="alertPanel" headerText="{i18n>alertsHeader}" expandable="true" expanded="true" class="sapUiSmallMargin">
         <Table id="alertTable"
-          items="{ path: 'alerting>/Alerts', parameters: { $expand: 'severity,status,equipment', $orderby: 'raisedAt desc', $top: 50 } }"
+          items="{ path: 'alerting>/Alerts', parameters: { $expand: 'severity,status,equipment', $orderby: 'raisedAt desc' } }"
           growing="true" growingThreshold="20">
           <headerToolbar>
             <OverflowToolbar>

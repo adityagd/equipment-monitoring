@@ -54,12 +54,10 @@ sap.ui.define([
         that._viewModel.setProperty("/kpi/crit", kpi.crit);
       }).catch(function () { /* service may be starting */ });
 
-      // Open alert count.
-      oAlerting.bindList("/OpenAlerts").requestContexts(0, 1, undefined, undefined, { $count: true })
-        .then(function (aCtx) {
-          var iCount = aCtx.length && aCtx[0].getBinding ? aCtx[0].getBinding().getLength() : aCtx.length;
-          that._viewModel.setProperty("/kpi/openAlerts", iCount || 0);
-        }).catch(function () { /* ignore */ });
+      // Open alert count (capped at 200 for the KPI tile).
+      oAlerting.bindList("/OpenAlerts").requestContexts(0, 200).then(function (aCtx) {
+        that._viewModel.setProperty("/kpi/openAlerts", aCtx.length);
+      }).catch(function () { /* service may be starting */ });
 
       this._viewModel.setProperty("/lastRefresh", "Updated " + new Date().toLocaleTimeString());
     },
