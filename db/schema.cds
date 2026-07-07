@@ -69,6 +69,9 @@ entity Alert : cuid, managed {
   acknowledgedAt : Timestamp;
   acknowledgedBy : String(120);
   resolvedAt     : Timestamp;
+  // Free-text note captured on acknowledge / resolve (kept separate from the
+  // generated breach `message`).
+  note           : String(500);
   // Optional link to a maintenance follow-up created via Destination integration
   maintenanceOrderId : String(40);
 }

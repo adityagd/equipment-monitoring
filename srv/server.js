@@ -86,7 +86,51 @@ function resolveSolaceConfig() {
   return null;
 }
 
+// ---------------------------------------------------------------------------
+// Live push to dashboards via Server-Sent Events (SSE)
+// ---------------------------------------------------------------------------
+// The dashboard opens an EventSource on /alerting/stream. Whenever an alert or
+// status-change event hits the internal bus, it is streamed to every connected
+// browser instantly (no 15s poll needed). One-way server -> client, plain HTTP,
+// so it traverses the approuter as a normal /alerting/* route.
+const sseClients = new Set();
+
+function broadcastSSE(event, data) {
+  const frame = `event: ${event}\ndata: ${JSON.stringify(data)}\n\n`;
+  for (const res of sseClients) {
+    try { res.write(frame); } catch (e) { /* client gone; cleaned up on close */ }
+  }
+}
+
+cds.on('bootstrap', (app) => {
+  // Registered before the OData service is mounted at /alerting, so this exact
+  // path takes precedence over the service router.
+  app.get('/alerting/stream', (req, res) => {
+    res.set({
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache, no-transform',
+      Connection: 'keep-alive'
+    });
+    if (res.flushHeaders) res.flushHeaders();
+    res.write('retry: 5000\n\n');
+    sseClients.add(res);
+    const heartbeat = setInterval(() => {
+      try { res.write(': ping\n\n'); } catch (e) { /* ignore */ }
+    }, 25000);
+    req.on('close', () => {
+      clearInterval(heartbeat);
+      sseClients.delete(res);
+    });
+  });
+});
+
 cds.on('served', async () => {
+  const messaging = await cds.connect.to('messaging');
+
+  // Live push (always on, independent of Solace).
+  messaging.on('sce/monitoring/equipment/alert/raised/v1', (msg) => broadcastSSE('alert', msg.data));
+  messaging.on('sce/monitoring/equipment/status/changed/v1', (msg) => broadcastSSE('status', msg.data));
+
   const cfg = resolveSolaceConfig();
   if (!cfg || !cfg.url) {
     return LOG.info('No Solace configuration found — internal messaging only (bridge disabled).');
@@ -99,7 +143,6 @@ cds.on('served', async () => {
     return LOG.warn('The `mqtt` package is not installed — Solace bridge disabled. Run `npm i mqtt`.');
   }
 
-  const messaging = await cds.connect.to('messaging');
   const client = mqtt.connect(cfg.url, {
     username: cfg.username,
     password: cfg.password,

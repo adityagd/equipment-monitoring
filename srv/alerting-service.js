@@ -32,7 +32,7 @@ module.exports = class AlertingService extends cds.ApplicationService {
       status_code: 'ACK',
       acknowledgedAt: new Date().toISOString(),
       acknowledgedBy: user,
-      message: note ? `${note}` : undefined
+      note: note || undefined
     });
     if (!updated) return req.error(404, `Alert ${alertID} not found`);
     return SELECT.one.from(this.Alert).where({ ID: alertID });
@@ -51,7 +51,8 @@ module.exports = class AlertingService extends cds.ApplicationService {
     await UPDATE(this.Alert, alertID).with({
       status_code: 'RESOLVED',
       resolvedAt: new Date().toISOString(),
-      maintenanceOrderId
+      maintenanceOrderId,
+      note: note || undefined
     });
     return SELECT.one.from(this.Alert).where({ ID: alertID });
   }

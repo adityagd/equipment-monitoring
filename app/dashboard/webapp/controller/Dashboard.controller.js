@@ -19,12 +19,34 @@ sap.ui.define([
       this.getView().setModel(this._viewModel, "view");
 
       this._loadKpis();
-      // Poll the OData services so the dashboard stays "live".
+      // Instant push via SSE; polling remains as a fallback.
+      this._initLiveStream();
       this._timer = setInterval(this.onRefresh.bind(this), REFRESH_MS);
     },
 
     onExit: function () {
       if (this._timer) { clearInterval(this._timer); }
+      if (this._eventSource) { this._eventSource.close(); }
+    },
+
+    // Subscribe to server-pushed alert/status events for real-time updates.
+    _initLiveStream: function () {
+      if (!window.EventSource) { return; }   // fall back to polling
+      try {
+        var that = this;
+        var es = new EventSource("/alerting/stream");
+        this._eventSource = es;
+
+        es.addEventListener("alert", function (oEvent) {
+          that.onRefresh();
+          try {
+            var oData = JSON.parse(oEvent.data);
+            MessageToast.show("Alert: " + (oData.message || oData.equipmentTag || "new alert"));
+          } catch (e) { /* ignore malformed frame */ }
+        });
+        es.addEventListener("status", function () { that.onRefresh(); });
+        // On error the browser auto-reconnects; the poll timer covers any gap.
+      } catch (e) { /* SSE unavailable; polling still active */ }
     },
 
     onRefresh: function () {
