@@ -10,9 +10,20 @@ module.exports = class AlertingService extends cds.ApplicationService {
   async init() {
     const { Alert } = cds.entities('sce.monitoring');
 
-    this.on('acknowledge', (req) => this.acknowledge(req));
-    this.on('resolve', (req) => this.resolve(req));
-    this.on('bulkAcknowledge', (req) => this.bulkAcknowledge(req));
+    // Wrap action handlers so any thrown/rejected error is returned as a clean
+    // OData error (500) instead of escaping as an unhandled rejection that would
+    // crash the Node process (→ 502 Bad Gateway at the approuter).
+    const safe = (name) => async (req) => {
+      try {
+        return await this[name](req);
+      } catch (e) {
+        cds.log('alerting').error(`${name} failed:`, e.message, e.stack);
+        return req.reject(500, e.message || `${name} failed`);
+      }
+    };
+    this.on('acknowledge', safe('acknowledge'));
+    this.on('resolve', safe('resolve'));
+    this.on('bulkAcknowledge', safe('bulkAcknowledge'));
 
     // React to alerts raised by the ingestion pipeline (in-process signal).
     // In a distributed setup this same topic is consumed from Event Mesh.
