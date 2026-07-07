@@ -1,3 +1,11 @@
+/* Full-height chain so the root sap.m.Page fills the viewport.
+   Without this the page header renders but the content area collapses to 0. */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 .sapMGT { border-radius: 0.75rem; }
 
 .sapUiSmallMargin .sapMPanelHdr { font-weight: 600; }

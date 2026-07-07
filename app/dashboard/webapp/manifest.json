@@ -6,6 +6,11 @@
     "title": "{{appTitle}}",
     "description": "{{appDescription}}",
     "applicationVersion": { "version": "1.0.0" },
+    "i18n": {
+      "bundleUrl": "i18n/i18n.properties",
+      "supportedLocales": [""],
+      "fallbackLocale": ""
+    },
     "dataSources": {
       "monitoring": {
         "uri": "/monitoring/",
