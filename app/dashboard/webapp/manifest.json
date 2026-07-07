@@ -36,9 +36,7 @@
         "sap.m": {},
         "sap.ui.core": {},
         "sap.ui.layout": {},
-        "sap.f": {},
-        "sap.suite.ui.microchart": {},
-        "sap.ui.table": {}
+        "sap.f": {}
       }
     },
     "contentDensities": { "compact": true, "cozy": true },
@@ -55,7 +53,6 @@
         "dataSource": "monitoring",
         "preload": true,
         "settings": {
-          "synchronizationMode": "None",
           "operationMode": "Server",
           "autoExpandSelect": true,
           "earlyRequests": true
@@ -65,7 +62,6 @@
         "dataSource": "alerting",
         "preload": true,
         "settings": {
-          "synchronizationMode": "None",
           "operationMode": "Server",
           "autoExpandSelect": true
         }
