@@ -12,6 +12,7 @@
       <ObjectStatus id="liveStatus" text="{i18n>live}" state="Success" inverted="true"/>
       <Text id="lastRefresh" text="{view>/lastRefresh}" class="sapUiSmallMarginBegin"/>
       <Button id="refreshBtn" icon="sap-icon://refresh" tooltip="{i18n>refresh}" press=".onRefresh"/>
+      <Button id="logoutBtn" icon="sap-icon://log" text="{i18n>logout}" tooltip="{i18n>logout}" press=".onLogout"/>
     </headerContent>
 
     <content>

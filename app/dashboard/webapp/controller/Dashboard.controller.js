@@ -143,6 +143,13 @@ sap.ui.define([
       MessageBox.information(o.message);
     },
 
-    onKpiPress: function () { this.onRefresh(); }
+    onKpiPress: function () { this.onRefresh(); },
+
+    onLogout: function () {
+      // Behind the approuter this hits the configured logoutEndpoint and ends
+      // the XSUAA session. Under local `cds watch` (Basic mock auth) there is no
+      // session; the browser must drop its cached credentials (see README).
+      window.location.href = "/logout";
+    }
   });
 });

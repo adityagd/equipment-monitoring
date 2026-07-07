@@ -2,6 +2,10 @@
   "welcomeFile": "/dashboard/index.html",
   "authenticationMethod": "route",
   "sessionTimeout": 30,
+  "logout": {
+    "logoutEndpoint": "/logout",
+    "logoutPage": "/"
+  },
   "routes": [
     {
       "source": "^/monitoring/(.*)$",
