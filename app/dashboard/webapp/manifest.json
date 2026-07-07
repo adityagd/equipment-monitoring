@@ -45,7 +45,11 @@
     "models": {
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
-        "settings": { "bundleName": "sce.monitoring.dashboard.i18n.i18n" }
+        "settings": {
+          "bundleName": "sce.monitoring.dashboard.i18n.i18n",
+          "supportedLocales": [""],
+          "fallbackLocale": ""
+        }
       },
       "": {
         "dataSource": "monitoring",
