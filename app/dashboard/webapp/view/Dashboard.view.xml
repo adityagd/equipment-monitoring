@@ -102,7 +102,7 @@
                 <Text text="{alerting>equipment/tag}"/>
                 <Text text="{alerting>message}"/>
                 <ObjectStatus text="{alerting>status/name}"/>
-                <Text text="{ path: 'alerting>raisedAt', type: 'sap.ui.model.odata.type.DateTimeOffset', formatOptions: { style: 'medium' } }"/>
+                <Text text="{ path: 'alerting>raisedAt', type: 'sap.ui.model.odata.type.DateTimeOffset', constraints: { V4: true }, formatOptions: { style: 'medium' } }"/>
               </cells>
             </ColumnListItem>
           </items>
