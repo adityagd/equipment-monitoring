@@ -87,7 +87,7 @@ entity MetricTypes : CodeList {
 }
 
 entity Criticalities : CodeList {
-  key code : String(3);          // LOW | MED | HIGH
+  key code : String(10);         // LOW | MED | HIGH
 }
 
 entity EquipmentStatuses : CodeList {

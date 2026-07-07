@@ -26,7 +26,8 @@
     },
     {
       "source": "^/(.*)$",
-      "target": "/dashboard/$1",
+      "target": "$1",
+      "localDir": "resources/dashboard",
       "authenticationType": "xsuaa"
     }
   ]
