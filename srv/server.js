@@ -23,12 +23,47 @@ const OUTBOUND_TOPICS = [
   'sce/monitoring/equipment/status/changed/v1'
 ];
 
+/**
+ * Load a local `.env` (KEY=VALUE) into process.env for development, if present.
+ * No-op in Cloud Foundry (no .env file — creds come from VCAP_SERVICES). Does
+ * not overwrite variables already set in the real environment.
+ */
+function loadDotEnv() {
+  try {
+    const fs = require('fs');
+    const path = require('path');
+    const file = path.join(cds.root || process.cwd(), '.env');
+    if (!fs.existsSync(file)) return;
+    for (const raw of fs.readFileSync(file, 'utf8').split(/\r?\n/)) {
+      const line = raw.trim();
+      if (!line || line.startsWith('#')) continue;
+      const eq = line.indexOf('=');
+      if (eq < 0) continue;
+      const key = line.slice(0, eq).trim();
+      let val = line.slice(eq + 1).trim();
+      if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+        val = val.slice(1, -1);
+      }
+      if (key && !(key in process.env)) process.env[key] = val;
+    }
+  } catch (e) {
+    cds.log('solace-bridge').warn('Could not read .env:', e.message);
+  }
+}
+
+/** Normalize a Solace host URI to a scheme the Node `mqtt` client understands. */
+function normalizeMqttUrl(url) {
+  if (!url) return url;
+  return url.replace(/^ssl:\/\//i, 'mqtts://').replace(/^tcp:\/\//i, 'mqtt://');
+}
+
 /** Resolve broker credentials from env vars (local) or a bound CF service. */
 function resolveSolaceConfig() {
+  loadDotEnv();
   // 1) Explicit env vars — local .env or `cf set-env`
   if (process.env.SOLACE_MQTT_URL) {
     return {
-      url: process.env.SOLACE_MQTT_URL,
+      url: normalizeMqttUrl(process.env.SOLACE_MQTT_URL),
       username: process.env.SOLACE_MQTT_USERNAME,
       password: process.env.SOLACE_MQTT_PASSWORD
     };
@@ -40,7 +75,7 @@ function resolveSolaceConfig() {
     if (ups && ups.credentials) {
       const c = ups.credentials;
       return {
-        url: c.mqttUrl || c.url,
+        url: normalizeMqttUrl(c.mqttUrl || c.url),
         username: c.username,
         password: c.password
       };

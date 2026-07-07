@@ -64,12 +64,14 @@ modules:
       disk-quota: 512M
     build-parameters:
       builder: custom
+      # Copy the Fiori app into the router (served statically) then install deps.
+      # `npm install` is used instead of `npm ci` because app/router has no lockfile.
       commands:
-        - npm ci
-      # Copy the built Fiori app into the router so it can be served statically
-      before-all:
+        - rm -rf resources/dashboard
         - mkdir -p resources/dashboard
-        - cp -r ../dashboard/webapp/* resources/dashboard/
+        - cp -r ../dashboard/webapp/. resources/dashboard/
+        - npm install --production
+      build-result: .
     requires:
       - name: equipment-monitoring-auth
       - name: equipment-monitoring-destination
