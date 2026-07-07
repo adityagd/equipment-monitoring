@@ -4,8 +4,8 @@ const cds = require('@sap/cds');
 // `expect` is provided globally by jest.
 const { GET } = cds.test(__dirname + '/..');
 
-// Services require an authenticated user; mocked-auth accepts any username.
-const AUTH = { auth: { username: 'supervisor', password: '' } };
+// Services require an authenticated user; use the seeded mock Supervisor.
+const AUTH = { auth: { username: 'supervisor', password: 'supervisor' } };
 
 describe('Ingestion pipeline (Event Mesh)', () => {
   test('a threshold breach persists a reading, raises an alert and flips status', async () => {

@@ -38,7 +38,17 @@
       },
       "auth": {
         "[development]": {
-          "kind": "mocked-auth"
+          "kind": "mocked",
+          "users": {
+            "viewer": {
+              "password": "viewer",
+              "roles": ["Viewer"]
+            },
+            "supervisor": {
+              "password": "supervisor",
+              "roles": ["Viewer", "Supervisor"]
+            }
+          }
         },
         "[production]": {
           "kind": "xsuaa"
