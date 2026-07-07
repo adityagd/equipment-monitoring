@@ -10,11 +10,6 @@
     {
       "name": "$XSAPPNAME.Supervisor",
       "description": "Acknowledge / resolve alerts and trigger maintenance"
-    },
-    {
-      "name": "$XSAPPNAME.Ingest",
-      "description": "Publish telemetry into the ingestion pipeline",
-      "grant-as-authority-to-apps": ["$XSAPPNAME(application)"]
     }
   ],
   "attributes": [],
